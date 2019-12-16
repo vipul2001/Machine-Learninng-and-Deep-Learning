@@ -8,3 +8,8 @@ It is an attempt to bring along various techniques in machine learning and deep 
 5. Hyper Parameter Tuning via GridSearchCV
 6. Plotting and Using Confusion Matrix
 7. Plotting ROC Curve of Classification
+## 2. Combining Model for Ensemble Learning
+1.Implementing simple Majority Vote Classifier
+2.Using GridSearchCV for HyperParameter selection
+3.Making A Bagging Classifier
+4.Using AdaBoost Classifier
