@@ -13,3 +13,11 @@ It is an attempt to bring along various techniques in machine learning and deep 
 2. Using GridSearchCV for HyperParameter selection
 3. Making A Bagging Classifier
 4. Using AdaBoost Classifier
+## 3. Regression Analysis
+1. Exploratory data Aanlysis
+2. Linear Regression from Scratch
+3. RANSAC Regressor
+4. LASSO,RIDGE AND ElasticNet
+5. Polynomial Regression
+6. Decision Tree Regressor
+7. Random Forest Regressor
