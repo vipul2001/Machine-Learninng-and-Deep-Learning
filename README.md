@@ -28,3 +28,7 @@ It is an attempt to bring along various techniques in machine learning and deep 
 4. Organizing clusters as a hierarchical tree
 5. Agglomerative Clustering
 6. DBSCAN
+# 5. Classification Analysis
+1. Implementing a perceptron learning algorithm in Python
+2. Adaptive linear neurons and the convergence of learning
+3. Adaptive linear neurons with SGD and the convergence of learning
