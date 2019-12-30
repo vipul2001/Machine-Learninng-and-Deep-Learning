@@ -21,18 +21,18 @@ It is an attempt to bring along various techniques in machine learning and deep 
 5. Polynomial Regression
 6. Decision Tree Regressor
 7. Random Forest Regressor
-# 4. Clustering Analysis
+## 4. Clustering Analysis
 1. KMeans Clustering
 2. Elbow Method Of Clustering
 3. Quantifying the quality of clustering via silhouette plots
 4. Organizing clusters as a hierarchical tree
 5. Agglomerative Clustering
 6. DBSCAN
-# 5. Classification Analysis
+## 5. Classification Analysis
 1. Implementing a perceptron learning algorithm in Python
 2. Adaptive linear neurons and the convergence of learning
 3. Adaptive linear neurons with SGD and the convergence of learning
-# 6. Basics of Tensorflow
+## 6. Basics of Tensorflow
 1. Basic Operation in Tensorflow
 2. Spliting tensors in tensorflow
 3. Creating Tensorflow Data Set from existing Datasets
