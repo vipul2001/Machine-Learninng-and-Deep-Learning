@@ -32,3 +32,9 @@ It is an attempt to bring along various techniques in machine learning and deep 
 1. Implementing a perceptron learning algorithm in Python
 2. Adaptive linear neurons and the convergence of learning
 3. Adaptive linear neurons with SGD and the convergence of learning
+# 6. Basics of Tensorflow
+1. Basic Operation in Tensorflow
+2. Spliting tensors in tensorflow
+3. Creating Tensorflow Data Set from existing Datasets
+4. Using Dataset from available tensorflow Library
+5. Using celeb Dataset
