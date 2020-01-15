@@ -38,10 +38,18 @@ It is an attempt to bring along various techniques in machine learning and deep 
 3. Creating Tensorflow Data Set from existing Datasets
 4. Using Dataset from available tensorflow Library
 5. Using celeb Dataset
-## Basic Tensorflow Neural Network
+## 7. Basic Tensorflow Neural Network
 1. Building Linear Regression Model in Tensorflow
 2. Model Training Via .compile() and .fit()
 3. Building Multi Layer Preception for Iris Dataset
 4. logistic Activation Function
 5. Class Probability via Softmax Function
 6. Using Hyperbolic tanh function
+## 8. Transfer Learning In Pytorch using VGG16
+1. Checking for GPU
+2. Loading Dataset
+3. Loading pretrained VGG 16 network
+4. Training the changed network results
+5. Checking Test Accuracy and making prediction
+
+
