@@ -51,5 +51,9 @@ It is an attempt to bring along various techniques in machine learning and deep 
 3. Loading pretrained VGG 16 network
 4. Training the changed network results
 5. Checking Test Accuracy and making prediction
-
-
+## 9. Convoluional Autoencoders in Pytorch
+1. Loading Data Set
+2. Visualizing Data Set
+3. Defining Convolutional AutoEncoder
+4. Training Neural Network
+5. Checking Network Results
