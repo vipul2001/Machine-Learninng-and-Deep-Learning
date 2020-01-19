@@ -55,36 +55,30 @@ ax = fig.add_subplot(111)
 ax.imshow(img, cmap='gray')
 
 
-# # Defining Convolutional Denoiser
+# # Defining Convolutional AutoEncoder
 
-# In[35]:
+# In[17]:
 
 
 import torch.nn as nn
 import torch.nn.functional as F
 
 # define the NN architecture
-class ConvDenoiser(nn.Module):
+class ConvAutoencoder(nn.Module):
     def __init__(self):
-        super(ConvDenoiser, self).__init__()
+        super(ConvAutoencoder, self).__init__()
         ## encoder layers ##
-        # conv layer (depth from 1 --> 32), 3x3 kernels
-        self.conv1 = nn.Conv2d(1, 32, 3, padding=1)  
-        # conv layer (depth from 32 --> 16), 3x3 kernels
-        self.conv2 = nn.Conv2d(32, 16, 3, padding=1)
-        # conv layer (depth from 16 --> 8), 3x3 kernels
-        self.conv3 = nn.Conv2d(16, 8, 3, padding=1)
+        # conv layer (depth from 1 --> 16), 3x3 kernels
+        self.conv1 = nn.Conv2d(1, 16, 3, padding=1)  
+        # conv layer (depth from 16 --> 4), 3x3 kernels
+        self.conv2 = nn.Conv2d(16, 4, 3, padding=1)
         # pooling layer to reduce x-y dims by two; kernel and stride of 2
         self.pool = nn.MaxPool2d(2, 2)
         
         ## decoder layers ##
-        # transpose layer, a kernel of 2 and a stride of 2 will increase the spatial dims by 2
-        self.t_conv1 = nn.ConvTranspose2d(8, 8, 3, stride=2)  # kernel_size=3 to get to a 7x7 image output
-        # two more transpose layers with a kernel of 2
-        self.t_conv2 = nn.ConvTranspose2d(8, 16, 2, stride=2)
-        self.t_conv3 = nn.ConvTranspose2d(16, 32, 2, stride=2)
-        # one, final, normal conv layer to decrease the depth
-        self.conv_out = nn.Conv2d(32, 1, 3, padding=1)
+        ## a kernel of 2 and a stride of 2 will increase the spatial dims by 2
+        self.t_conv1 = nn.ConvTranspose2d(4, 16, 2, stride=2)
+        self.t_conv2 = nn.ConvTranspose2d(16, 1, 2, stride=2)
 
 
     def forward(self, x):
@@ -95,29 +89,24 @@ class ConvDenoiser(nn.Module):
         x = self.pool(x)
         # add second hidden layer
         x = F.relu(self.conv2(x))
-        x = self.pool(x)
-        # add third hidden layer
-        x = F.relu(self.conv3(x))
         x = self.pool(x)  # compressed representation
         
         ## decode ##
         # add transpose conv layers, with relu activation function
         x = F.relu(self.t_conv1(x))
-        x = F.relu(self.t_conv2(x))
-        x = F.relu(self.t_conv3(x))
-        # transpose again, output should have a sigmoid applied
-        x = torch.sigmoid(self.conv_out(x))
+        # output layer (with sigmoid for scaling from 0 to 1)
+        x = torch.sigmoid(self.t_conv2(x))
                 
         return x
 
 # initialize the NN
-model = ConvDenoiser()
+model = ConvAutoencoder()
 print(model)
 
 
-# # Training Neural Network with Random Noise
+# # Training Neural Network
 
-# In[36]:
+# In[18]:
 
 
 criterion = nn.MSELoss()
@@ -126,15 +115,12 @@ criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 
-# In[38]:
+# In[19]:
 
 
 a=[]
-#  number of epochs to train the model
-n_epochs = 20
-
-# for adding noise to images
-noise_factor=0.5
+# number of epochs to train the model
+n_epochs = 30
 
 for epoch in range(1, n_epochs+1):
     # monitor training loss
@@ -147,19 +133,13 @@ for epoch in range(1, n_epochs+1):
         # _ stands in for labels, here
         # no need to flatten images
         images, _ = data
-        
-        ## add random noise to the input images
-        noisy_imgs = images + noise_factor * torch.randn(*images.shape)
-        # Clip the images to be between 0 and 1
-        noisy_imgs = np.clip(noisy_imgs, 0., 1.)
-                
         # clear the gradients of all optimized variables
         optimizer.zero_grad()
-        ## forward pass: compute predicted outputs by passing *noisy* images to the model
-        outputs = model(noisy_imgs)
+        # forward pass: compute predicted outputs by passing inputs to the model
+        outputs = model(images)
         # calculate the loss
-        # the "target" is still the original, not-noisy images
         loss = criterion(outputs, images)
+        a.append(loss)
         # backward pass: compute gradient of the loss with respect to model parameters
         loss.backward()
         # perform a single optimization step (parameter update)
@@ -169,38 +149,35 @@ for epoch in range(1, n_epochs+1):
             
     # print avg training statistics 
     train_loss = train_loss/len(train_loader)
-    a.append(train_loss)
     print('Epoch: {} \tTraining Loss: {:.6f}'.format(
         epoch, 
         train_loss
         ))
 
 
-# In[41]:
+# In[30]:
 
 
 np.array(a).shape
 
-plt.plot(np.linspace(0,9,9),a)
+plt.plot(np.linspace(0,90000,90000),a)
 plt.show()
 
 
 # # Checking Network Results
 
-# In[42]:
+# In[20]:
 
 
+
+# obtain one batch of test images
 dataiter = iter(test_loader)
 images, labels = dataiter.next()
 
-# add noise to the test images
-noisy_imgs = images + noise_factor * torch.randn(*images.shape)
-noisy_imgs = np.clip(noisy_imgs, 0., 1.)
-
 # get sample outputs
-output = model(noisy_imgs)
+output = model(images)
 # prep images for display
-noisy_imgs = noisy_imgs.numpy()
+images = images.numpy()
 
 # output is resized into a batch of iages
 output = output.view(batch_size, 1, 28, 28)
@@ -211,27 +188,25 @@ output = output.detach().numpy()
 fig, axes = plt.subplots(nrows=2, ncols=10, sharex=True, sharey=True, figsize=(25,4))
 
 # input images on top row, reconstructions on bottom
-for noisy_imgs, row in zip([noisy_imgs, output], axes):
-    for img, ax in zip(noisy_imgs, row):
+for images, row in zip([images, output], axes):
+    for img, ax in zip(images, row):
         ax.imshow(np.squeeze(img), cmap='gray')
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
 
 
-# In[43]:
+# In[34]:
 
 
+
+# obtain one batch of test images
 #dataiter = iter(test_loader)
 images, labels = dataiter.next()
 
-# add noise to the test images
-noisy_imgs = images + noise_factor * torch.randn(*images.shape)
-noisy_imgs = np.clip(noisy_imgs, 0., 1.)
-
 # get sample outputs
-output = model(noisy_imgs)
+output = model(images)
 # prep images for display
-noisy_imgs = noisy_imgs.numpy()
+images = images.numpy()
 
 # output is resized into a batch of iages
 output = output.view(batch_size, 1, 28, 28)
@@ -242,8 +217,8 @@ output = output.detach().numpy()
 fig, axes = plt.subplots(nrows=2, ncols=10, sharex=True, sharey=True, figsize=(25,4))
 
 # input images on top row, reconstructions on bottom
-for noisy_imgs, row in zip([noisy_imgs, output], axes):
-    for img, ax in zip(noisy_imgs, row):
+for images, row in zip([images, output], axes):
+    for img, ax in zip(images, row):
         ax.imshow(np.squeeze(img), cmap='gray')
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
