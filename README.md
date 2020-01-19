@@ -65,3 +65,10 @@ It is an attempt to bring along various techniques in machine learning and deep 
 4. Training Neural Network with Random Noise
 5. Checking Network Results
 
+## 11. Neural Style Transfer
+1. Load VGG 19 (Features)
+2. Load Content and Style Image
+3. Content and Style Features
+4. Gram Matrix
+5. Updating Target and Calculating Loss
+6. Final Results
