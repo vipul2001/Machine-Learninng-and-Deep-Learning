@@ -72,3 +72,9 @@ It is an attempt to bring along various techniques in machine learning and deep 
 4. Gram Matrix
 5. Updating Target and Calculating Loss
 6. Final Results
+## 12. Intro to RNN
+1. Creating Data For Prediction
+2. Definig RNN
+3. Checking Input and Output Dimension
+4. Training the RNN
+
