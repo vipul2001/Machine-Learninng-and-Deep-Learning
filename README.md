@@ -78,3 +78,8 @@ It is an attempt to bring along various techniques in machine learning and deep 
 3. Checking Input and Output Dimension
 4. Training the RNN
 
+## 13. RNN in Pytorch
+1. Single RNN from Scratch
+2. RNN Cell in Pytorch
+3. Using RNN on MNSIT Data
+4. Image RNN in Pytorch
